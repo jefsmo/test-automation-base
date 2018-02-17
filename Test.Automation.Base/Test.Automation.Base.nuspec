@@ -3,7 +3,7 @@
   <metadata>
     <!-- Required elements-->
     <id>Test.Automation.Base</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>Abstract base class for test classes. Logs test framework TestContext data.</description>
     <authors>jefsmo</authors>
     <!-- Optional elements -->

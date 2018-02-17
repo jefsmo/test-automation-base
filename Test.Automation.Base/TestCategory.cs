@@ -74,11 +74,13 @@ namespace Test.Automation.Base
         /// <summary>
         /// Type - AdHoc: test intended to find defects that were not found by existing test cases.
         /// </summary>
+        [Description("Ad Hoc")]
         AdHoc = 256,
 
         /// <summary>
         /// Type - Mock: test uses a Mock framework in place of a repository dependency.
         /// </summary>
+        [Description("Mock")]
         Mock = 512,
 
         #endregion

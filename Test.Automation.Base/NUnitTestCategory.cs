@@ -121,8 +121,7 @@ namespace Test.Automation.Base
         /// </summary>
         public AdHocAttribute() : base(TestCategory.AdHoc.ToDescription()) { }
     }
-
-
+    
     /// <summary>
     /// Type - Mock: test uses a Mock framework in place of a repository dependency.
     /// </summary>
@@ -133,7 +132,6 @@ namespace Test.Automation.Base
         /// </summary>
         public MockAttribute() : base(TestCategory.Mock.ToDescription()) { }
     }
-
 
     #endregion
 
@@ -171,7 +169,6 @@ namespace Test.Automation.Base
         /// </summary>
         public WebAttribute() : base(TestCategory.Web.ToDescription()) { }
     }
-
-
+    
     #endregion
 }

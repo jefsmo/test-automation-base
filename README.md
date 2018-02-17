@@ -1,48 +1,16 @@
 # Test.Automation.Base
 **README.md**
-## Overview
+## History
+|Date|Notes|
+|---|---|
+|2018-02-17|Bug fixes|
+|2017-12-05|Initial Release|
 
-### OctoPack_Reference.md
-#### Create a Local NuGet Package with OctoPack
-- Add a `.nuspec` file to each project in the solution that you want to package with NuGet.
-- The `.nuspec` file name **must be the same name as the project** with the `.nuspec` extension
-- Open a '`Developer Command Prompt for VS2017`' command window.
-- Navigate to the solution or project that you want to OctoPack.
-- Run the following command:
-#### MSBuild Octopack Command
-```
-
-MSBUILD Test.Automation.Base.csproj /t:Rebuild /p:Configuration=Release /p:RunOctoPack=true /p:OctoPackPublishPackageToFileShare=C:\Packages /p:OctoPackPackageVersion=1.0.0 /fl
-
-```
-#### MSBUILD OctoPack Command Syntax
-|Switch|Value|Definition|
-|-----|-----|-----|
-|`/t:Rebuild`|  |MSBUILD Rebuilds the project(s).|
-|`/p:Configuration=`|`Release`|Creates and packages a Release build.|
-|`/p:RunOctoPack=`|`true`|Creates packages with Octopack using the .nuspec file layout.|
-|`/p:OctoPackPackageVersion=`|`1.0.0`|Updates Package Version.|
-|`/p:OctoPackPublishPackageToFileShare=`|`C:\Packages`|Copies packages to local file location.|
-    
-#### Other OctoPack Options:
-
-|Switch|Value|Description|
-|-----|-----|-----|
-|`/p:Configuration=`|`[ Release | Debug ]`|The build configuration|
-|`/p:RunOctoPack=`|`[ true | false ]`|Enable or Disable OctoPack|
-|`/p:OctoPackPackageVersion=`|`1.2.3`|Version number of the NuGet package. By default, OctoPack gets the version from your assembly version attributes. Set this parameter to use an explicit version number.|
-|`/p:OctoPackPublishPackageToFileShare=`|`C:\Packages`|Copies packages to the specified directory.|
-|`/p:OctoPackPublishPackageToHttp=`|`http://my-nuget-server/api/v2/package`| Pushes the package to the NuGet server|
-|`/p:OctoPackPublishApiKey=`|`ABCDEFGMYAPIKEY`|API key to use when publishing|
-|`/p:OctoPackNuGetArguments=`| `-Verbosity detailed`|Use this parameter to specify additional command line parameters that will be passed to NuGet.exe pack.|
-|`/p:OctoPackNuGetExePath=`|`C:\MyNuGetPath\`|OctoPack comes with a bundled version of NuGet.exe. Use this parameter to force OctoPack to use a different NuGet.exe instead.|
-|`/p:OctoPackNuSpecFileName=`|`<C#/VB_ProjectName>.nuspec`|The NuSpec file to use.|
-
-#### Viewing Local Packages
-- Install NuGet Package Explorer to view local packages.  
-- [NuGetPackageExplorer](https://github.com/NuGetPackageExplorer/NuGetPackageExplorer)
-
-
+## Contents
+[NUnit Test Project Workflow](#nunit-test-project-workflow)  
+[Octopack Reference](#octopack-reference)  
+[Viewing Local Packages](#viewing-local-packages)  
+[Troubleshooting](#troubleshooting)  
 
 ## NUnit Test Project Workflow
 
@@ -106,5 +74,45 @@ namespace UnitTestProject1
 ![Pass_WithTestAttributes.png](Pass_WithTestAttributes.png)
 ![Fail_NoTestAttributes.png](Fail_NoTestAttributes.png)
 
+
+## Octopack Reference
+#### Create a Local NuGet Package with OctoPack
+- Add a `.nuspec` file to each project in the solution that you want to package with NuGet.
+- The `.nuspec` file name **must be the same name as the project** with the `.nuspec` extension
+- Open a '`Developer Command Prompt for VS2017`' command window.
+- Navigate to the solution or project that you want to OctoPack.
+- Run the following command:
+#### MSBuild Octopack Command
+```
+
+MSBUILD Test.Automation.Base.csproj /t:Rebuild /p:Configuration=Release /p:RunOctoPack=true /p:OctoPackPublishPackageToFileShare=C:\Packages /p:OctoPackPackageVersion=1.0.0 /fl
+
+```
+#### MSBUILD OctoPack Command Syntax
+|Switch|Value|Definition|
+|-----|-----|-----|
+|`/t:Rebuild`|  |MSBUILD Rebuilds the project(s).|
+|`/p:Configuration=`|`Release`|Creates and packages a Release build.|
+|`/p:RunOctoPack=`|`true`|Creates packages with Octopack using the .nuspec file layout.|
+|`/p:OctoPackPackageVersion=`|`1.0.0`|Updates Package Version.|
+|`/p:OctoPackPublishPackageToFileShare=`|`C:\Packages`|Copies packages to local file location.|
+    
+#### Other OctoPack Options:
+
+|Switch|Value|Description|
+|-----|-----|-----|
+|`/p:Configuration=`|`[ Release | Debug ]`|The build configuration|
+|`/p:RunOctoPack=`|`[ true | false ]`|Enable or Disable OctoPack|
+|`/p:OctoPackPackageVersion=`|`1.2.3`|Version number of the NuGet package. By default, OctoPack gets the version from your assembly version attributes. Set this parameter to use an explicit version number.|
+|`/p:OctoPackPublishPackageToFileShare=`|`C:\Packages`|Copies packages to the specified directory.|
+|`/p:OctoPackPublishPackageToHttp=`|`http://my-nuget-server/api/v2/package`| Pushes the package to the NuGet server|
+|`/p:OctoPackPublishApiKey=`|`ABCDEFGMYAPIKEY`|API key to use when publishing|
+|`/p:OctoPackNuGetArguments=`| `-Verbosity detailed`|Use this parameter to specify additional command line parameters that will be passed to NuGet.exe pack.|
+|`/p:OctoPackNuGetExePath=`|`C:\MyNuGetPath\`|OctoPack comes with a bundled version of NuGet.exe. Use this parameter to force OctoPack to use a different NuGet.exe instead.|
+|`/p:OctoPackNuSpecFileName=`|`<C#/VB_ProjectName>.nuspec`|The NuSpec file to use.|
+
+## Viewing Local Packages
+- Install NuGet Package Explorer to view local packages.  
+- [NuGetPackageExplorer](https://github.com/NuGetPackageExplorer/NuGetPackageExplorer)
 
 ## Troubleshooting
