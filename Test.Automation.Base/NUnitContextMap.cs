@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
-using NUnit.Framework.Interfaces;
 
 namespace Test.Automation.Base
 {
@@ -31,9 +30,9 @@ namespace Test.Automation.Base
             MethodName = testContext.Test.MethodName;
             Owner = "Unknown";
             Priority = TestPriority.Unknown;
-            SafeTestName = RemoveInvalidFileNameChars(TestName, "X");
+            SafeTestName = NUnitTestBase.RemoveInvalidFileNameChars(TestName);
             TestBinariesDirectory = testContext.TestDirectory;
-            TestResultStatus = GetTestResultStatus(testContext.Result.Outcome.Status);
+            TestResultStatus = NUnitTestBase.GetTestResultStatus(testContext.Result.Outcome.Status);
             var testcategories = new List<TestCategory>
             {
                 TestCategory.Unknown
@@ -206,38 +205,5 @@ namespace Test.Automation.Base
         public TestResultStatus TestResultStatus { get; set; }
         
         #endregion
-
-        /// <summary>
-        /// Replaces any invalid file name characters with an 'X' to preserve the filename length.
-        /// </summary>
-        /// <param name="name">The file name to remove invalid characters from.</param>
-        /// <returns>Returns a string.</returns>
-        public string RemoveInvalidFileNameChars(string name, string safeCharacter)
-        {
-            return string.Join(safeCharacter, name.Split(Path.GetInvalidFileNameChars()));
-        }
-
-        /// <summary>
-        /// Returns the TestStatus mapped to one of the TestResultStatus values.
-        /// </summary>
-        /// <param name="currentTestStatus">The result of the test.</param>
-        /// <returns>Returns a test framework agnostic test result.</returns>
-        public TestResultStatus GetTestResultStatus(TestStatus currentTestStatus)
-        {
-            switch (currentTestStatus)
-            {
-                case TestStatus.Passed:
-                    return TestResultStatus.Pass;
-                case TestStatus.Failed:
-                    return TestResultStatus.Fail;
-                case TestStatus.Skipped:
-                    return TestResultStatus.NotExecuted;
-                case TestStatus.Warning:
-                case TestStatus.Inconclusive:
-                    return TestResultStatus.Blocked;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(currentTestStatus), currentTestStatus, null);
-            }
-        }
     }
 }

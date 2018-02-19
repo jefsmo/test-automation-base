@@ -65,13 +65,5 @@
         /// </summary>
         TestResultStatus TestResultStatus { get; set; }
         
-        /// <summary>
-        /// Replaces any invalid file name characters with a safe char ('X') to preserve the filename length.
-        /// </summary>
-        /// <param name="name">The file name to remove invalid characters from.</param>
-        /// <param name="safeCharacter">The safe character used to replace unsafe chars.</param>
-        /// <returns>Returns a string.</returns>
-        string RemoveInvalidFileNameChars(string name, string safeCharacter);
-
     }
 }
