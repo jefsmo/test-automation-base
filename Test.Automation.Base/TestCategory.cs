@@ -103,7 +103,12 @@ namespace Test.Automation.Base
         /// Area - Web: verifies the Web UI.
         /// </summary>
         [Description("Web")]
-        Web = 4096
+        Web = 4096,
+
+        /// <summary>
+        /// Area - Reports: verifies SSRS reports.
+        /// </summary>
+        Reports = 8192
 
         #endregion
     }

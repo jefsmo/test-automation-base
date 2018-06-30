@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 
 namespace Test.Automation.Base
@@ -71,7 +72,7 @@ namespace Test.Automation.Base
                         Timeout = (int)properties.Get("Timeout");
                         break;
                     case "Category":
-                        if (properties["Category"].Count > 0)
+                        if ((properties["Category"]).Count() > 0)
                         {
                             testcategories.Clear();
                             foreach (var item in properties["Category"])

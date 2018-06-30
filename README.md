@@ -15,10 +15,10 @@
 ## NUnit Test Project Workflow
 
 ## Examples
-```
+
+```csharp
 using NUnit.Framework;
 using Test.Automation.Base;
-using Test.Automation.Base.NUnitBase;
 
 namespace UnitTestProject1
 {
@@ -83,10 +83,9 @@ namespace UnitTestProject1
 - Navigate to the solution or project that you want to OctoPack.
 - Run the following command:
 #### MSBuild Octopack Command
-```
 
+```text
 MSBUILD Test.Automation.Base.csproj /t:Rebuild /p:Configuration=Release /p:RunOctoPack=true /p:OctoPackPublishPackageToFileShare=C:\Packages /p:OctoPackPackageVersion=1.0.0 /fl
-
 ```
 #### MSBUILD OctoPack Command Syntax
 |Switch|Value|Definition|

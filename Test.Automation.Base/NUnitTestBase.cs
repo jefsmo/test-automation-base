@@ -25,7 +25,7 @@ namespace Test.Automation.Base
         [TearDown]
         public void TestAutomationBaseCleanup()
         {
-            if (!(TestContext.CurrentContext.Result.Outcome.Status == NUnit.Framework.Interfaces.TestStatus.Passed)
+            if (!(TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Passed)
                 || Debugger.IsAttached)
             {
                 MappedContext = new NUnitContextMap(TestContext.CurrentContext);

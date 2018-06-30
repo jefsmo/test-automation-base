@@ -169,6 +169,17 @@ namespace Test.Automation.Base
         /// </summary>
         public WebAttribute() : base(TestCategory.Web.ToDescription()) { }
     }
+
+    /// <summary>
+    /// Area - Reports: verifies SSRS reports.
+    /// </summary>
+    public class ReportsAttribute : CategoryAttribute
+    {
+        /// <summary>
+        /// Initializes a new instance of the Reports test category.
+        /// </summary>
+        public ReportsAttribute() : base(TestCategory.Reports.ToDescription()) { }
+    }
     
     #endregion
 }
