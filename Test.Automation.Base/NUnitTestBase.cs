@@ -116,7 +116,7 @@ namespace Test.Automation.Base
 
             foreach (var kvp in logInfo)
             {
-                Console.WriteLine($"{kvp.Key,-25}\t{kvp.Value,-30}");
+                Console.WriteLine($"{kvp.Key.Trim(),-30}\t{kvp.Value.Trim(),-35}");
             }
             Console.WriteLine($"{new string('=', 80)}");
         }

@@ -74,7 +74,7 @@ namespace Test.Automation.Base
         /// <summary>
         /// Type - AdHoc: test intended to find defects that were not found by existing test cases.
         /// </summary>
-        [Description("Ad Hoc")]
+        [Description("AdHoc")]
         AdHoc = 256,
 
         /// <summary>

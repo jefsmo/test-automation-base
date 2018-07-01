@@ -3,15 +3,15 @@
   <metadata>
     <!-- Required elements-->
     <id>Test.Automation.Base</id>
-    <version>1.0.4</version>
-    <description>Abstract base class for test classes. Logs test framework TestContext data.</description>
+    <version>1.0.18</version>
+    <description>Abstract base class for test classes. Logs test framework TestContext and TestAttribute data.</description>
     <authors>jefsmo</authors>
     <!-- Optional elements -->
     <projectUrl>https://github.com/jefsmo/Test.Automation.Base</projectUrl>
     <releaseNotes>
       Initial Release (2017-12-05)
     </releaseNotes>
-    <copyright>© 2017 jefsmo</copyright>
+    <copyright>© 2017-2018 jefsmo</copyright>
     <tags>Test Automation Base Class NUnit</tags>
     <!--<frameworkAssemblies>
       <frameworkAssembly />

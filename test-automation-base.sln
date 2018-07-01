@@ -7,9 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Automation.Base", "Tes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{951A19B6-7570-424B-AAC8-33EFD3FEEC3D}"
 	ProjectSection(SolutionItems) = preProject
-		Fail_NoTestAttributes.png = Fail_NoTestAttributes.png
-		Fail_WithTestAttributes.png = Fail_WithTestAttributes.png
-		Pass_WithTestAttributes.png = Pass_WithTestAttributes.png
 		README.md = README.md
 	EndProjectSection
 EndProject
