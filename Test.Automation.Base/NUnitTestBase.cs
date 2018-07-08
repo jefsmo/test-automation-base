@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 
@@ -34,93 +35,18 @@ namespace Test.Automation.Base
             }
         }
 
-        private static void LogTestAttributes(ITestAutomationContext mappedContext)
-        {
-            var timeout = double.Parse(int.MaxValue.ToString());
-            if (mappedContext.Timeout <= 0 || mappedContext.Timeout == int.MaxValue)
-            {
-                timeout = -1;
-            }
-            else
-            {
-                timeout = mappedContext.Timeout / 60000D;
-            }
-
-            var attributes = new Dictionary<string, string>
-            {
-                {
-                    "Owner",
-                    mappedContext.Owner
-                },
-                {
-                    "Description",
-                    mappedContext.Description
-                },
-                {
-                    "Timeout", timeout == -1
-                    ? "Infinite"
-                    : (timeout) == 1
-                        ? $"{timeout} (second)"
-                        : $"{timeout} (seconds)"
-                },
-                {
-                    "Test Priority",
-                    mappedContext.Priority.ToDescription()
-                },
-                {
-                    "Test Category",
-                    mappedContext.TestCategories
-                    .Select(x => x.ToDescription())
-                    .Aggregate((x, next) => x + ", " + next)
-                },
-                {
-                    "Test Property",
-                    string.Join(", ", mappedContext.TestProperties)
-                },
-                {
-                    "Work Item",
-                    string.Join(", ",
-                    mappedContext.WorkItems.Count() == 0
-                    ? new List<string>{ "Unknown"}
-                    : mappedContext.WorkItems.Select(x => x.ToString()))
-                }
-            };
-            WriteLogToOutput("Test Attributes", attributes);
-        }
-
-        private static void LogTestContext(ITestAutomationContext mappedContext)
-        {
-            // Log test context info.
-            var context = new Dictionary<string, string>
-            {
-                {"Unique ID", mappedContext.Id },
-                {"Class Name", mappedContext.ClassName },
-                {"Method Name", mappedContext.MethodName },
-                {"Test Name", mappedContext.TestName },
-                {"Binaries Dir", mappedContext.TestBinariesDirectory},
-                {"Deployment Dir", mappedContext.CurrentDirectory},
-                {"Logs Dir", mappedContext.LogDirectory},
-            };
-            WriteLogToOutput("Test Context", context);
-        }
-
         /// <summary>
         /// Formats and logs data to output window.
-        /// Related data is segregated into separate log sections.
         /// </summary>
         /// <param name="logSectionName">The name of the log section.</param>
-        /// <param name="logInfo">The information getting logged into that section.</param>
-        public static void WriteLogToOutput(string logSectionName, Dictionary<string, string> logInfo)
+        /// <param name="objectToLog">The information getting logged into that section.</param>
+        public static void WriteLogToOutput(string logSectionName, object objectToLog)
         {
-            Console.WriteLine($"{logSectionName.ToUpper()}");
-
-            foreach (var kvp in logInfo)
-            {
-                Console.WriteLine($"{kvp.Key.Trim(),-30}\t{kvp.Value.Trim(),-35}");
-            }
+            Console.WriteLine($"{logSectionName.ToUpperInvariant()}");
+            Console.WriteLine(JsonConvert.SerializeObject(objectToLog, Formatting.Indented));
             Console.WriteLine($"{new string('=', 80)}");
         }
-
+        
         /// <summary>
         /// Replaces any invalid file name characters with a safe character (default = 'X') to preserve the filename length.
         /// </summary>
@@ -153,6 +79,53 @@ namespace Test.Automation.Base
                 default:
                     throw new ArgumentOutOfRangeException(nameof(currentTestStatus), currentTestStatus, null);
             }
+        }
+
+        private static void LogTestAttributes(ITestAutomationContext mappedContext)
+        {
+            // Log test attribute info.
+            var timeout = -1;
+
+            if (mappedContext.Timeout > 0 && mappedContext.Timeout < int.MaxValue)
+            {
+                timeout = mappedContext.Timeout;
+            }
+
+            var attributes = new
+            {
+                mappedContext.Owner,
+                mappedContext.Description,
+                Timeout = timeout == -1
+                    ? "Infinite"
+                    : $"{timeout.ToString("N0")} (ms)",
+                Priority = mappedContext.Priority.ToDescription(),
+                TestCategory = mappedContext.TestCategories
+                    .Select(x => x.ToDescription())
+                    .Aggregate((x, next) => x + ", " + next),
+                TestProperty = string.Join(", ", mappedContext.TestProperties),
+                WorkItem = string.Join(", ", mappedContext.WorkItems.Count() == 0
+                    ? new List<string> { "Unknown" }
+                    : mappedContext.WorkItems.Select(x => x.ToString()))
+            };
+
+            WriteLogToOutput("Test Attributes", attributes);
+        }
+
+        private static void LogTestContext(ITestAutomationContext mappedContext)
+        {
+            // Log test context info.
+            var context = new
+            {
+                mappedContext.Id,
+                mappedContext.ClassName,
+                mappedContext.MethodName,
+                mappedContext.TestName,
+                mappedContext.TestBinariesDirectory,
+                mappedContext.CurrentDirectory,
+                mappedContext.LogDirectory
+            };
+
+            WriteLogToOutput("Test Context", context);
         }
     }
 }

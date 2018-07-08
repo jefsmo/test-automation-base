@@ -39,7 +39,7 @@ namespace Test.Automation.Base
                 TestCategory.Unknown
             };
             var testproperties = new List<KeyValuePair<string, string>>();
-            Timeout = int.MaxValue;
+            Timeout = int.MaxValue; // Default to 'infinite' timeout.
             var workitems = new List<int>();
 
             // Get the values when the attribute is provided.
@@ -129,7 +129,7 @@ namespace Test.Automation.Base
         /// <summary>
         /// Gets or sets the time-out period of a unit test.
         /// </summary>
-        public double Timeout { get; set; }
+        public int Timeout { get; set; }
 
         /// <summary>
         /// Gets or sets a work item associated with a test.
