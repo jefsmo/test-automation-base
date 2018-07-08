@@ -15,8 +15,8 @@ Automatically logs test attribute and test context data to the output window.
  - When running hundreds of tests, this can add minutes or hours to a test run.
  - This framework only logs when tests fail or are run in debug mode.
 
-## History
-|Date|Notes|
+## Release Notes
+|Date|Description|
 |---|---|
 |2018-07-01|Bug fixes <br> Update README|
 |2018-02-18|Bug fixes|

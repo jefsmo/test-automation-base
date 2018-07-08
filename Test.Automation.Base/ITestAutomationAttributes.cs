@@ -35,7 +35,7 @@ namespace Test.Automation.Base
         /// <summary>
         /// Gets or sets  the time-out period of a unit test.
         /// </summary>
-        int Timeout { get; set; }
+        double Timeout { get; set; }
 
         /// <summary>
         /// Gets or sets  a list of work items associated with a test.

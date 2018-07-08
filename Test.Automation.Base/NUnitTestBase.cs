@@ -36,14 +36,14 @@ namespace Test.Automation.Base
 
         private static void LogTestAttributes(ITestAutomationContext mappedContext)
         {
-            var timeout = int.MaxValue;
+            var timeout = double.Parse(int.MaxValue.ToString());
             if (mappedContext.Timeout <= 0 || mappedContext.Timeout == int.MaxValue)
             {
                 timeout = -1;
             }
             else
             {
-                timeout = mappedContext.Timeout / 6000;
+                timeout = mappedContext.Timeout / 60000D;
             }
 
             var attributes = new Dictionary<string, string>
