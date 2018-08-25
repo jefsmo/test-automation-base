@@ -49,7 +49,7 @@ namespace UnitTestProject1
         [Test]
         public void NoTestAttributes_ShouldFail()
         {
-            Assert.That(4+1, Is.EqualTo(4));
+            Assert.That(4 + 1, Is.EqualTo(4));
         }
 
         [Test,
@@ -59,10 +59,10 @@ namespace UnitTestProject1
             Author("Your Name"),
             Integration, Smoke, Web,
             Property("Bug", "FOO-42"),
-            WorkItem(123), WorkItem(456), WorkItem(789)]
+            WorkItem("123"), WorkItem("456"), WorkItem("789")]
         public void AllTestAttributes_ShouldFail()
         {
-            Assert.That(21+21, Is.EqualTo(41));
+            Assert.That(21 + 21, Is.EqualTo(41));
         }
 
         [Test,
@@ -70,12 +70,12 @@ namespace UnitTestProject1
             Priority(Priority.Normal),
             Description("This test passes and has [Test] attributes."),
             Author("Your Name"),
-            UnitTest, Functional, Database
+            UnitTest, Functional, Database,
             Property("ID", "BAR-42"),
-            WorkItem(123), WorkItem(456), WorkItem(789)]
+            WorkItem("123"), WorkItem("456"), WorkItem("789")]
         public void AllTestAttributes_ShouldPass()
         {
-            Assert.That(21+21, Is.EqualTo(42));
+            Assert.That(21 + 21, Is.EqualTo(42));
         }
 
         [TestCase(2, 3, Author = "Your Name", Category = "Integration, Smoke, Web", Description = "This test fails and has [TestCase] attributes.", TestName = "AllTestCaseAttributes_ShouldFail")]
@@ -87,7 +87,51 @@ namespace UnitTestProject1
     }
 }
 ```
- 
+  
+### Example Test Output
+Message:   Expected: 41  
+  But was:  42
+
+```json
+{
+  "Timeout": 60000,
+  "Priority": "High",
+  "Description": "This test fails and has [Test] attributes.",
+  "Owner": "Your Name",
+  "Category": [
+    "Integration",
+    "Smoke",
+    "Web"
+  ],
+  "WorkItem": [
+    "123",
+    "456",
+    "789"
+  ],
+  "Property": [
+    {
+      "Key": "Bug",
+      "Value": "FOO-42"
+    },
+    {
+      "Key": "Bug",
+      "Value": "FOO-43"
+    }
+  ],
+  "Id": "0-1002",
+  "TestName": "AllTestAttributes_ShouldFail",
+  "SafeTestName": "AllTestAttributes_ShouldFail",
+  "MethodName": "AllTestAttributes_ShouldFail",
+  "ClassName": "UnitTestProject1.UnitTest1",
+  "FullyQualifiedTestClassName": "UnitTestProject1.UnitTest1.AllTestAttributes_ShouldFail",
+  "CurrentDirectory": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\IDE",
+  "TestBinariesDirectory": "C:\\Source\\Repos\\test-automation-base\\UnitTestProject1\\bin\\Debug",
+  "LogDirectory": "C:\\Source\\Repos\\test-automation-base\\UnitTestProject1\\bin\\Debug",
+  "Message": "  Expected: 41\r\n  But was:  42\r\n",
+  "TestResultStatus": "Fail"
+}
+```
+  
 ## Viewing Local Packages
 - Install NuGet Package Explorer to view local packages.  
 - [NuGetPackageExplorer](https://github.com/NuGetPackageExplorer/NuGetPackageExplorer)
