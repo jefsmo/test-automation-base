@@ -8,16 +8,6 @@ namespace Test.Automation.Base
     public interface ITestAutomationAttributes
     {
         /// <summary>
-        /// Gets or sets the description of the test. 
-        /// </summary>
-        string Description { get; set; }
-
-        /// <summary>
-        /// Gets or sets  the person responsible for maintaining, running, and/or debugging the test. 
-        /// </summary>
-        string Owner { get; set; }
-
-        /// <summary>
         /// Gets or sets  the time-out period of a unit test.
         /// </summary>
         int Timeout { get; set; }
@@ -26,6 +16,16 @@ namespace Test.Automation.Base
         /// Gets or sets  the priority of a unit test. 
         /// </summary>
         Priority Priority { get; set; }
+
+        /// <summary>
+        /// Gets or sets the description of the test. 
+        /// </summary>
+        string Description { get; set; }
+
+        /// <summary>
+        /// Gets or sets  the person responsible for maintaining, running, and/or debugging the test. 
+        /// </summary>
+        string Owner { get; set; }
 
         /// <summary>
         /// Gets or sets  the Class that is used to specify the category of a unit test.

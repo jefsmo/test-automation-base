@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
@@ -29,8 +30,7 @@ namespace Test.Automation.Base
                 || Debugger.IsAttached)
             {
                 MappedContext = new NUnitContextMap(TestContext.CurrentContext);
-                LogTestAttributes(MappedContext);
-                LogTestContext(MappedContext);
+                WriteLogToOutput("Test Context", MappedContext, new StringEnumConverter());
             }
         }
 
@@ -39,10 +39,10 @@ namespace Test.Automation.Base
         /// </summary>
         /// <param name="logSectionName">The name of the log section.</param>
         /// <param name="objectToLog">The information getting logged into that section.</param>
-        public static void WriteLogToOutput(string logSectionName, object objectToLog)
+        public static void WriteLogToOutput(string logSectionName, object objectToLog, params JsonConverter[] converters)
         {
             Console.WriteLine($"{logSectionName.ToUpperInvariant()}");
-            Console.WriteLine(JsonConvert.SerializeObject(objectToLog, Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(objectToLog, Formatting.Indented, converters));
             Console.WriteLine($"{new string('=', 80)}");
         }
         
@@ -78,49 +78,6 @@ namespace Test.Automation.Base
                 default:
                     throw new ArgumentOutOfRangeException(nameof(currentTestStatus), currentTestStatus, null);
             }
-        }
-
-        private static void LogTestAttributes(ITestAutomationContext mappedContext)
-        {
-            // Log test attribute info.
-            var timeout = -1;
-
-            if (mappedContext.Timeout > 0 && mappedContext.Timeout < int.MaxValue)
-            {
-                timeout = mappedContext.Timeout;
-            }
-
-            var attributes = new
-            {
-                mappedContext.Description,
-                mappedContext.Owner,
-                Timeout = timeout == -1
-                    ? "Infinite"
-                    : $"{timeout.ToString("N0")} (ms)",
-                Priority = mappedContext.Priority + $" ({(int)mappedContext.Priority})",
-                mappedContext.Category,
-                mappedContext.WorkItem,
-                mappedContext.Property
-            };
-
-            WriteLogToOutput("Test Attributes", attributes);
-        }
-
-        private static void LogTestContext(ITestAutomationContext mappedContext)
-        {
-            // Log test context info.
-            var context = new
-            {
-                mappedContext.Id,
-                mappedContext.ClassName,
-                mappedContext.MethodName,
-                mappedContext.TestName,
-                mappedContext.TestBinariesDirectory,
-                mappedContext.CurrentDirectory,
-                mappedContext.LogDirectory
-            };
-
-            WriteLogToOutput("Test Context", context);
         }
     }
 }

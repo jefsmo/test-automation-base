@@ -73,16 +73,6 @@ namespace Test.Automation.Base
 
         #region TEST ATTRIBUTES
         /// <summary>
-        /// Gets or sets the description of the test. 
-        /// </summary>
-        public string Description { get; set; }
-
-        /// <summary>
-        /// Gets or sets the person responsible for maintaining, running, and/or debugging the test. 
-        /// </summary>
-        public string Owner { get; set; }
-
-        /// <summary>
         /// Gets or sets the time-out period of a unit test.
         /// </summary>
         public int Timeout { get; set; }
@@ -91,6 +81,16 @@ namespace Test.Automation.Base
         /// Gets or sets the priority of a unit test. 
         /// </summary>
         public Priority Priority { get; set; }
+
+        /// <summary>
+        /// Gets or sets the description of the test. 
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Gets or sets the person responsible for maintaining, running, and/or debugging the test. 
+        /// </summary>
+        public string Owner { get; set; }
 
         /// <summary>
         /// Gets or sets the category of a unit test.
@@ -110,15 +110,33 @@ namespace Test.Automation.Base
 
         #region TEST CONTEXT
         /// <summary>
+        /// Gets or sets the test ID.
+        /// NUnit: The unique Id of the test.
+        /// </summary>
+        public string Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets the test name from TestContext.
+        /// NUnit: The name of the test which may or may not be the same as the method name.
+        /// </summary>
+        public string TestName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the test name with any invalid file name characters replaced by a safe character.
+        /// </summary>
+        public string SafeTestName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the test method name.
+        /// NUnit: The name of the method representing the test.
+        /// </summary>
+        public string MethodName { get; set; }
+
+        /// <summary>
         /// Gets or sets the test class short name.
         /// NUnit: The class name of the test.
         /// </summary>
         public string ClassName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the current directory of the executing assembly from Directory.GetCurrentDirectory().
-        /// </summary>
-        public string CurrentDirectory { get; set; }
 
         /// <summary>
         /// Gets or sets the fully qualified test class name from TestContext.
@@ -127,10 +145,16 @@ namespace Test.Automation.Base
         public string FullyQualifiedTestClassName { get; set; }
 
         /// <summary>
-        /// Gets or sets the test ID.
-        /// NUnit: The unique Id of the test.
+        /// Gets or sets the current directory of the executing assembly from Directory.GetCurrentDirectory().
         /// </summary>
-        public string Id { get; set; }
+        public string CurrentDirectory { get; set; }
+
+        /// <summary>
+        /// Gets or sets the directory containing files deployed for test run.
+        /// MSTest: DeploymentDirectory: Returns the directory for files deployed for the test run.
+        ///  NUnit: TestDirectory: Gets the directory containing the current test assembly.
+        /// </summary>
+        public string TestBinariesDirectory { get; set; }
 
         /// <summary>
         /// Gets or sets the log directory from TestContext.
@@ -143,30 +167,6 @@ namespace Test.Automation.Base
         /// NUnit: Gets the message associated with a test failure or with not running the test.
         /// </summary>
         public string Message { get; set; }
-
-        /// <summary>
-        /// Gets or sets the test method name.
-        /// NUnit: The name of the method representing the test.
-        /// </summary>
-        public string MethodName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the test name with any invalid file name characters replaced by a safe character.
-        /// </summary>
-        public string SafeTestName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the directory containing files deployed for test run.
-        /// MSTest: DeploymentDirectory: Returns the directory for files deployed for the test run.
-        ///  NUnit: TestDirectory: Gets the directory containing the current test assembly.
-        /// </summary>
-        public string TestBinariesDirectory { get; set; }
-
-        /// <summary>
-        /// Gets or sets the test name from TestContext.
-        /// NUnit: The name of the test which may or may not be the same as the method name.
-        /// </summary>
-        public string TestName { get; set; }
         
         /// <summary>
         /// Gets or sets the current test outcome from TestContext mapped to one of the TestResultStatus enum values.

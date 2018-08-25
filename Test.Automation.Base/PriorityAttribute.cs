@@ -14,8 +14,8 @@ namespace Test.Automation.Base
         /// </summary>
         /// <param name="priority"></param>
         public PriorityAttribute(Priority priority)
-            : base(priority) { }
-
+            : base(priority)
+        { }
     }
 
     /// <summary>
