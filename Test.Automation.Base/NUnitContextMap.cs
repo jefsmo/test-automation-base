@@ -27,10 +27,10 @@ namespace Test.Automation.Base
             ClassName = testContext.Test.ClassName;
             FullyQualifiedTestClassName = testContext.Test.FullName;
             CurrentDirectory = Directory.GetCurrentDirectory();
-            LogDirectory = testContext.WorkDirectory;
             TestBinariesDirectory = testContext.TestDirectory;
-            TestResultStatus = NUnitTestBase.GetTestResultStatus(testContext.Result.Outcome.Status);
+            LogDirectory = testContext.WorkDirectory;
             Message = testContext.Result.Message;
+            TestResultStatus = NUnitTestBase.GetTestResultStatus(testContext.Result.Outcome.Status);
 
             Timeout = int.MaxValue; // Default to 'infinite' timeout.
             Category = new List<string>();
@@ -42,11 +42,8 @@ namespace Test.Automation.Base
             {
                 switch (key)
                 {
-                    case "Description":
-                        Description = (string)properties.Get("Description");
-                        break;
-                    case "Author":
-                        Owner = (string)properties.Get("Author");
+                    case "Timeout":
+                        Timeout = (int)properties.Get("Timeout");
                         break;
                     case "Priority":
                         var priority = properties.Get("Priority");
@@ -55,8 +52,11 @@ namespace Test.Automation.Base
                             Priority = (Priority)priority;
                         }
                         break;
-                    case "Timeout":
-                        Timeout = (int)properties.Get("Timeout");
+                    case "Description":
+                        Description = (string)properties.Get("Description");
+                        break;
+                    case "Author":
+                        Owner = (string)properties.Get("Author");
                         break;
                     case "Category":
                         Category = properties["Category"].Select(x => x.ToString().Trim()).ToList();
