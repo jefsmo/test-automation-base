@@ -50,16 +50,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomCategoryAttributes.cs" />
     <Compile Include="ITestAutomationAttributes.cs" />
     <Compile Include="ITestAutomationContext.cs" />
     <Compile Include="NUnitContextMap.cs" />
     <Compile Include="NUnitTestBase.cs" />
-    <Compile Include="NUnitTestCategory.cs" />
+    <Compile Include="PriorityAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestResultStatus.cs" />
-    <Compile Include="TestCategory.cs" />
-    <Compile Include="TestPriority.cs" />
     <Compile Include="ToDescriptionExtension.cs" />
+    <Compile Include="WorkItemAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

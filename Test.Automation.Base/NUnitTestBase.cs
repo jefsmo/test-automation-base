@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
+using NUnit.Framework.Internal;
 
 namespace Test.Automation.Base
 {
@@ -93,19 +92,15 @@ namespace Test.Automation.Base
 
             var attributes = new
             {
-                mappedContext.Owner,
                 mappedContext.Description,
+                mappedContext.Owner,
                 Timeout = timeout == -1
                     ? "Infinite"
                     : $"{timeout.ToString("N0")} (ms)",
-                Priority = mappedContext.Priority.ToDescription(),
-                TestCategory = mappedContext.TestCategories
-                    .Select(x => x.ToDescription())
-                    .Aggregate((x, next) => x + ", " + next),
-                TestProperty = string.Join(", ", mappedContext.TestProperties),
-                WorkItem = string.Join(", ", mappedContext.WorkItems.Count() == 0
-                    ? new List<string> { "Unknown" }
-                    : mappedContext.WorkItems.Select(x => x.ToString()))
+                Priority = mappedContext.Priority + $" ({(int)mappedContext.Priority})",
+                mappedContext.Category,
+                mappedContext.WorkItem,
+                mappedContext.Property
             };
 
             WriteLogToOutput("Test Attributes", attributes);

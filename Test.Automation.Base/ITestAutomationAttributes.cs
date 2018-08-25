@@ -18,28 +18,28 @@ namespace Test.Automation.Base
         string Owner { get; set; }
 
         /// <summary>
-        /// Gets or sets  the priority of a unit test. 
-        /// </summary>
-        TestPriority Priority { get; set; }
-
-        /// <summary>
-        /// Gets or sets  the Class that is used to specify the category of a unit test.
-        /// </summary>
-        IEnumerable<TestCategory> TestCategories { get; set; }
-
-        /// <summary>
-        /// Gets or sets  a test specific property on a method.
-        /// </summary>
-        IEnumerable<KeyValuePair<string, string>> TestProperties { get; set; }
-
-        /// <summary>
         /// Gets or sets  the time-out period of a unit test.
         /// </summary>
         int Timeout { get; set; }
 
         /// <summary>
+        /// Gets or sets  the priority of a unit test. 
+        /// </summary>
+        Priority Priority { get; set; }
+
+        /// <summary>
+        /// Gets or sets  the Class that is used to specify the category of a unit test.
+        /// </summary>
+        IList<string> Category { get; set; }
+
+        /// <summary>
         /// Gets or sets  a list of work items associated with a test.
         /// </summary>
-        IEnumerable<int> WorkItems { get; set; }
+        IList<string> WorkItem { get; set; }
+
+        /// <summary>
+        /// Gets or sets  a test specific property on a method.
+        /// </summary>
+        IList<KeyValuePair<string, string>> Property { get; set; }
     }
 }

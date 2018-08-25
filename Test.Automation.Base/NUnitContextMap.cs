@@ -20,27 +20,22 @@ namespace Test.Automation.Base
             // Extract the property bag from TestContext.
             var properties = testContext.Test.Properties;
 
-            TestName = testContext.Test.Name;
-            ClassName = testContext.Test.ClassName;
-            CurrentDirectory = Directory.GetCurrentDirectory();
-            Description = "Unknown";
-            FullyQualifiedTestClassName = testContext.Test.FullName;
             Id = testContext.Test.ID;
-            LogDirectory = testContext.WorkDirectory;
-            Message = testContext.Result.Message;
-            MethodName = testContext.Test.MethodName;
-            Owner = "Unknown";
-            Priority = TestPriority.Unknown;
+            TestName = testContext.Test.Name;
             SafeTestName = NUnitTestBase.RemoveInvalidFileNameChars(TestName);
+            MethodName = testContext.Test.MethodName;
+            ClassName = testContext.Test.ClassName;
+            FullyQualifiedTestClassName = testContext.Test.FullName;
+            CurrentDirectory = Directory.GetCurrentDirectory();
+            LogDirectory = testContext.WorkDirectory;
             TestBinariesDirectory = testContext.TestDirectory;
             TestResultStatus = NUnitTestBase.GetTestResultStatus(testContext.Result.Outcome.Status);
-            var testcategories = new List<TestCategory>
-            {
-                TestCategory.Unknown
-            };
-            var testproperties = new List<KeyValuePair<string, string>>();
+            Message = testContext.Result.Message;
+
             Timeout = int.MaxValue; // Default to 'infinite' timeout.
-            var workitems = new List<int>();
+            Category = new List<string>();
+            WorkItem = new List<string>();
+            Property = new List<KeyValuePair<string, string>>();
 
             // Get the values when the attribute is provided.
             foreach (var key in properties.Keys)
@@ -54,53 +49,29 @@ namespace Test.Automation.Base
                         Owner = (string)properties.Get("Author");
                         break;
                     case "Priority":
-                        var priority = (TestPriority)(Enum.Parse(typeof(TestPriority), properties.Get("Priority").ToString()));
-                        if (priority < 0)
+                        var priority = properties.Get("Priority");
+                        if (Enum.IsDefined(typeof(Priority), priority))
                         {
-                            Priority = TestPriority.Unknown;
-                        }
-                        else if (priority > TestPriority.Low)
-                        {
-                            Priority = TestPriority.Unknown;
-                        }
-                        else
-                        {
-                            Priority = priority;
+                            Priority = (Priority)priority;
                         }
                         break;
                     case "Timeout":
                         Timeout = (int)properties.Get("Timeout");
                         break;
                     case "Category":
-                        if ((properties["Category"]).Count() > 0)
-                        {
-                            testcategories.Clear();
-                            foreach (var item in properties["Category"])
-                            {
-                                testcategories.Add((TestCategory)Enum.Parse(typeof(TestCategory), item.ToString()));
-                            }
-                        }
+                        Category = properties["Category"].Select(x => x.ToString().Trim()).ToList();
                         break;
                     case "WorkItem":
-                        foreach (int item in properties["WorkItem"])
-                        {
-                            workitems.Add(item);
-                        }
+                        WorkItem = properties["WorkItem"].Select(x => x.ToString().Trim()).ToList();
                         break;
                     default:
-                        testproperties.Add(new KeyValuePair<string, string>(key, Convert.ToString(properties.Get(key))));
+                        Property = properties[key].Select(x => new KeyValuePair<string, string>(key, x.ToString())).ToList();
                         break;
                 }
             }
-            TestCategories = testcategories;
-            TestProperties = testproperties.Count == 0
-                ? new List<KeyValuePair<string, string>>{ new KeyValuePair<string, string>("Unknown", "Unknown") }
-                : testproperties;
-            WorkItems = workitems;
         }
 
         #region TEST ATTRIBUTES
-
         /// <summary>
         /// Gets or sets the description of the test. 
         /// </summary>
@@ -112,34 +83,32 @@ namespace Test.Automation.Base
         public string Owner { get; set; }
 
         /// <summary>
-        /// Gets or sets the priority of a unit test. 
-        /// </summary>
-        public TestPriority Priority { get; set; }
-
-        /// <summary>
-        /// Gets or sets the category of a unit test.
-        /// </summary>
-        public IEnumerable<TestCategory> TestCategories { get; set; }
-
-        /// <summary>
-        /// Gets or sets a test specific property on a method.
-        /// </summary>
-        public IEnumerable<KeyValuePair<string, string>> TestProperties { get; set; }
-
-        /// <summary>
         /// Gets or sets the time-out period of a unit test.
         /// </summary>
         public int Timeout { get; set; }
 
         /// <summary>
+        /// Gets or sets the priority of a unit test. 
+        /// </summary>
+        public Priority Priority { get; set; }
+
+        /// <summary>
+        /// Gets or sets the category of a unit test.
+        /// </summary>
+        public IList<string> Category { get; set; }
+        
+        /// <summary>
         /// Gets or sets a work item associated with a test.
         /// </summary>
-        public IEnumerable<int> WorkItems { get; set; }
+        public IList<string> WorkItem { get; set; }
 
+        /// <summary>
+        /// Gets or sets a test specific property on a method.
+        /// </summary>
+        public IList<KeyValuePair<string, string>> Property { get; set; }
         #endregion
 
         #region TEST CONTEXT
-
         /// <summary>
         /// Gets or sets the test class short name.
         /// NUnit: The class name of the test.
@@ -204,7 +173,6 @@ namespace Test.Automation.Base
         /// [ Pass | Fail | In Progress | Not Executed | Blocked ]
         /// </summary>
         public TestResultStatus TestResultStatus { get; set; }
-        
         #endregion
     }
 }
