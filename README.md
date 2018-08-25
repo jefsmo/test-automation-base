@@ -12,12 +12,13 @@ Automatically logs test attribute and test context data to the output window.
 |Debug|Fail|yes|
 
  - In general, logging can add a significant performance penalty to a passing test.
- - When a test suite contains hundreds of tests, this can add minutes or hours to the test run.
+ - When a test suite contains hundreds of tests, this can add many minutes or even hours to the test run.
  - This framework only logs when tests fail or are run in debug mode.
 
 ## Release Notes
 |Date|Description|
 |---|---|
+|2018-08-25|Bug fixes; refactoring|
 |2018-07-01|Bug fixes <br> Update README|
 |2018-02-18|Bug fixes|
 |2017-12-05|Initial Release|
@@ -46,147 +47,47 @@ namespace UnitTestProject1
     public class UnitTest1 : NUnitTestBase
     {
         [Test]
-        public void Fail_NoTestAttributes()
+        public void NoTestAttributes_ShouldFail()
         {
-            Assert.That(1 + 4, Is.EqualTo(4));
+            Assert.That(4+1, Is.EqualTo(4));
         }
 
         [Test,
-            Author("Your Name"),
+            Timeout(60000),
+            Priority(Priority.High),
             Description("This test fails and has [Test] attributes."),
-            Property("Priority", (int)TestPriority.High),
-            Timeout(6000),
+            Author("Your Name"),
+            Integration, Smoke, Web,
             Property("Bug", "FOO-42"),
-            Property("WorkItem", 123),
-            Property("WorkItem", 456),
-            Property("WorkItem", 789),
-            Integration, Smoke, Web]
-        public void Fail_WithTestAttributes()
+            WorkItem(123), WorkItem(456), WorkItem(789)]
+        public void AllTestAttributes_ShouldFail()
         {
-            Assert.That(42, Is.EqualTo(41));
+            Assert.That(21+21, Is.EqualTo(41));
         }
 
         [Test,
-            Author("Your Name"),
-            Description("This test passes and has [Test] attributes."),
-            Property("Priority", (int)TestPriority.Normal),
             Timeout(int.MaxValue),
+            Priority(Priority.Normal),
+            Description("This test passes and has [Test] attributes."),
+            Author("Your Name"),
+            UnitTest, Functional, Database
             Property("ID", "BAR-42"),
-            Property("WorkItem", 123),
-            Property("WorkItem", 456),
-            Property("WorkItem", 789),
-            UnitTest, Functional, Database]
-        public void Pass_WithTestAttributes()
+            WorkItem(123), WorkItem(456), WorkItem(789)]
+        public void AllTestAttributes_ShouldPass()
         {
-            Assert.That(42, Is.EqualTo(42));
+            Assert.That(21+21, Is.EqualTo(42));
         }
 
-        [TestCase(2, 3, Author = "Your Name", Description = "This test fails and has [TestCase] attributes.", Category = "Integration, Smoke, Web", TestName = "Fail_WithTestCaseAttr")]
-        [TestCase(-5, 9, Author = "Your Name", Category = "Integration, Smoke, Web", Description = "This test passes and has [TestCase] attributes.", TestName = "Pass_WithTestCaseAttr")]
-        public void TestMulti_TestCaseAttributes(int first, int second)
+        [TestCase(2, 3, Author = "Your Name", Category = "Integration, Smoke, Web", Description = "This test fails and has [TestCase] attributes.", TestName = "AllTestCaseAttributes_ShouldFail")]
+        [TestCase(-5, 9)]
+        public void ParameterizedTestWithAttributes(int first, int second)
         {
             Assert.That(first + second, Is.EqualTo(4));
         }
     }
 }
 ```
-### Example Test Output
-#### Fail With Test Attributes
-~~~text
-Test Name:	Fail_WithTestAttributes
-Test Outcome:	Failed
-Result Message:	
-Expected: 41
-  But was:  42
-Result StandardOutput:	
-TEST ATTRIBUTES
-{
-  "Owner": "Your Name",
-  "Description": "This test fails and has [Test] attributes.",
-  "Timeout": "6,000 (ms)",
-  "Priority": "High",
-  "TestCategory": "Integration, Smoke, Web",
-  "TestProperty": "[Bug, FOO-42]",
-  "WorkItem": "123, 456, 789"
-}
-================================================================================
-TEST CONTEXT
-{
-  "Id": "0-1002",
-  "ClassName": "UnitTestProject1.UnitTest1",
-  "MethodName": "Fail_WithTestAttributes",
-  "TestName": "Fail_WithTestAttributes",
-  "TestBinariesDirectory": "C:\\Source\\Repos\\test-automation-base\\UnitTestProject1\\bin\\Debug",
-  "CurrentDirectory": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\IDE",
-  "LogDirectory": "C:\\Source\\Repos\\test-automation-base\\UnitTestProject1\\bin\\Debug"
-}
-================================================================================
-
-~~~
-
-#### Pass With Test Attributes (In Debug Mode)
-~~~text
-Test Name:	Pass_WithTestAttributes
-Test Outcome:	Passed
-Result StandardOutput:	
-TEST ATTRIBUTES
-{
-  "Owner": "Your Name",
-  "Description": "This test passes and has [Test] attributes.",
-  "Timeout": "Infinite",
-  "Priority": "Normal",
-  "TestCategory": "UnitTest, Functional, Database",
-  "TestProperty": "[ID, BAR-42]",
-  "WorkItem": "123, 456, 789"
-}
-================================================================================
-TEST CONTEXT
-{
-  "Id": "0-1003",
-  "ClassName": "UnitTestProject1.UnitTest1",
-  "MethodName": "Pass_WithTestAttributes",
-  "TestName": "Pass_WithTestAttributes",
-  "TestBinariesDirectory": "C:\\Source\\Repos\\test-automation-base\\UnitTestProject1\\bin\\Debug",
-  "CurrentDirectory": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\IDE",
-  "LogDirectory": "C:\\Source\\Repos\\test-automation-base\\UnitTestProject1\\bin\\Debug"
-}
-================================================================================
-
-~~~
-
-#### Fail With No Test Attributes
-~~~text
-Test Name:	Fail_NoTestAttributes
-Test Outcome:	Failed
-Result Message:	
-Expected: 4
-  But was:  5
-Result StandardOutput:	
-TEST ATTRIBUTES
-{
-  "Owner": "Unknown",
-  "Description": "Unknown",
-  "Timeout": "Infinite",
-  "Priority": "Unknown",
-  "TestCategory": "Unknown",
-  "TestProperty": "[Unknown, Unknown]",
-  "WorkItem": "Unknown"
-}
-================================================================================
-TEST CONTEXT
-{
-  "Id": "0-1001",
-  "ClassName": "UnitTestProject1.UnitTest1",
-  "MethodName": "Fail_NoTestAttributes",
-  "TestName": "Fail_NoTestAttributes",
-  "TestBinariesDirectory": "C:\\Source\\Repos\\test-automation-base\\UnitTestProject1\\bin\\Debug",
-  "CurrentDirectory": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\IDE",
-  "LogDirectory": "C:\\Source\\Repos\\test-automation-base\\UnitTestProject1\\bin\\Debug"
-}
-================================================================================
-
-~~~
-
+ 
 ## Viewing Local Packages
 - Install NuGet Package Explorer to view local packages.  
 - [NuGetPackageExplorer](https://github.com/NuGetPackageExplorer/NuGetPackageExplorer)
@@ -204,6 +105,7 @@ TEST CONTEXT
 ```text
 MSBUILD Test.Automation.Base.csproj /t:Rebuild /p:Configuration=Release /p:RunOctoPack=true /p:OctoPackPublishPackageToFileShare=C:\Packages /p:OctoPackPackageVersion=1.0.0
 ```
+ 
 ##### MSBUILD OctoPack Command Syntax
 |Switch|Value|Definition|
 |-----|-----|-----|
