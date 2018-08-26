@@ -3,7 +3,7 @@
     /// <summary>
     /// An interface that desribes the data in the test context.
     /// </summary>
-    public interface ITestAutomationContext : ITestAutomationAttributes
+    public interface ITestAutomationContext
     {
         /// <summary>
         /// Gets or sets the unique Id of the test.
@@ -33,7 +33,7 @@
         /// <summary>
         /// Gets or sets the fully qualified test class name from TestContext.
         /// </summary>
-        string FullyQualifiedTestClassName { get; set; }
+        string FullName { get; set; }
 
         /// <summary>
         /// Gets or sets the current directory of the executing assembly from Directory.GetCurrentDirectory().
@@ -42,16 +42,15 @@
 
         /// <summary>
         /// Gets or sets the directory where the test binaries are located.
-        /// VS TEST: DeploymentDirectory: Returns the directory for files deployed for the test run.
         /// NUNIT: TestDirectory: Gets the full path of the directory containing the current test assembly.
         /// </summary>
-        string TestBinariesDirectory { get; set; }
+        string TestDirectory { get; set; }
 
         /// <summary>
-        /// Gets or sets the log directory from TestContext.
+        /// Gets or sets the work directory from TestContext.
         /// NUnit: Gets the full path of the directory to be used for output from this test run. 
         /// </summary>
-        string LogDirectory { get; set; }
+        string WorkDirectory { get; set; }
 
         /// <summary>
         /// Gets or sets the message from TestContext or the original test status from the test framework TestContext.

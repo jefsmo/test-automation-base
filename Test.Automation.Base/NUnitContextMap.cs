@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
@@ -9,7 +10,7 @@ namespace Test.Automation.Base
     /// <summary>
     /// Represents an NUnit TestContext mapped to test framework agnostic fields.
     /// </summary>
-    public class NUnitContextMap : ITestAutomationContext
+    public class NUnitContextMap : ITestAutomationContext, ITestAutomationAttributes
     {
         /// <summary>
         /// Creates a test framework agnostic test context from NUnit TestsContext data.
@@ -17,25 +18,24 @@ namespace Test.Automation.Base
         /// <param name="testContext"></param>
         public NUnitContextMap(TestContext testContext)
         {
-            // Extract the property bag from TestContext.
-            var properties = testContext.Test.Properties;
-
             Id = testContext.Test.ID;
             TestName = testContext.Test.Name;
             SafeTestName = NUnitTestBase.RemoveInvalidFileNameChars(TestName);
             MethodName = testContext.Test.MethodName;
             ClassName = testContext.Test.ClassName;
-            FullyQualifiedTestClassName = testContext.Test.FullName;
+            FullName = testContext.Test.FullName;
             CurrentDirectory = Directory.GetCurrentDirectory();
-            TestBinariesDirectory = testContext.TestDirectory;
-            LogDirectory = testContext.WorkDirectory;
+            TestDirectory = testContext.TestDirectory;
+            WorkDirectory = testContext.WorkDirectory;
             Message = testContext.Result.Message;
             TestResultStatus = NUnitTestBase.GetTestResultStatus(testContext.Result.Outcome.Status);
 
-            Timeout = int.MaxValue; // Default to 'infinite' timeout.
-            Category = new List<string>();
-            WorkItem = new List<string>();
-            Property = new List<KeyValuePair<string, string>>();
+            // Default to 'infinite' timeout.
+            Timeout = int.MaxValue;
+            var propertyList = new List<KeyValuePair<string, string>>();
+
+            // Extract the property bag from TestContext.
+            var properties = testContext.Test.Properties;
 
             // Get the values when the attribute is provided.
             foreach (var key in properties.Keys)
@@ -65,48 +65,19 @@ namespace Test.Automation.Base
                         WorkItem = properties["WorkItem"].Select(x => x.ToString().Trim()).ToList();
                         break;
                     default:
-                        Property = properties[key].Select(x => new KeyValuePair<string, string>(key, x.ToString())).ToList();
+                        var customProperties = properties[key].Select(x => new KeyValuePair<string, string>(key, x.ToString()));
+                        foreach (var customProperty in customProperties)
+                        {
+                            propertyList.Add(customProperty);
+                        }
                         break;
                 }
             }
+            if (propertyList.Count > 0)
+            {
+                Property = propertyList;
+            }
         }
-
-        #region TEST ATTRIBUTES
-        /// <summary>
-        /// Gets or sets the time-out period of a unit test.
-        /// </summary>
-        public int Timeout { get; set; }
-
-        /// <summary>
-        /// Gets or sets the priority of a unit test. 
-        /// </summary>
-        public Priority Priority { get; set; }
-
-        /// <summary>
-        /// Gets or sets the description of the test. 
-        /// </summary>
-        public string Description { get; set; }
-
-        /// <summary>
-        /// Gets or sets the person responsible for maintaining, running, and/or debugging the test. 
-        /// </summary>
-        public string Owner { get; set; }
-
-        /// <summary>
-        /// Gets or sets the category of a unit test.
-        /// </summary>
-        public IList<string> Category { get; set; }
-        
-        /// <summary>
-        /// Gets or sets a work item associated with a test.
-        /// </summary>
-        public IList<string> WorkItem { get; set; }
-
-        /// <summary>
-        /// Gets or sets a test specific property on a method.
-        /// </summary>
-        public IList<KeyValuePair<string, string>> Property { get; set; }
-        #endregion
 
         #region TEST CONTEXT
         /// <summary>
@@ -142,7 +113,7 @@ namespace Test.Automation.Base
         /// Gets or sets the fully qualified test class name from TestContext.
         /// NUnit: The full name of the test.
         /// </summary>
-        public string FullyQualifiedTestClassName { get; set; }
+        public string FullName { get; set; }
 
         /// <summary>
         /// Gets or sets the current directory of the executing assembly from Directory.GetCurrentDirectory().
@@ -154,13 +125,13 @@ namespace Test.Automation.Base
         /// MSTest: DeploymentDirectory: Returns the directory for files deployed for the test run.
         ///  NUnit: TestDirectory: Gets the directory containing the current test assembly.
         /// </summary>
-        public string TestBinariesDirectory { get; set; }
+        public string TestDirectory { get; set; }
 
         /// <summary>
         /// Gets or sets the log directory from TestContext.
         /// NUnit: Gets the directory to be used for outputting files created by this test run. 
         /// </summary>
-        public string LogDirectory { get; set; }
+        public string WorkDirectory { get; set; }
 
         /// <summary>
         /// Gets or sets the message from TestContext or the original test status from the test framework TestContext.
@@ -173,6 +144,44 @@ namespace Test.Automation.Base
         /// [ Pass | Fail | In Progress | Not Executed | Blocked ]
         /// </summary>
         public TestResultStatus TestResultStatus { get; set; }
+        #endregion
+
+        #region TEST ATTRIBUTES
+        /// <summary>
+        /// Gets or sets the time-out period of a unit test.
+        /// </summary>
+        [DefaultValue(int.MaxValue)]
+        public int Timeout { get; set; }
+
+        /// <summary>
+        /// Gets or sets the priority of a unit test. 
+        /// </summary>
+        public Priority Priority { get; set; }
+
+        /// <summary>
+        /// Gets or sets the description of the test. 
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Gets or sets the person responsible for maintaining, running, and/or debugging the test. 
+        /// </summary>
+        public string Owner { get; set; }
+
+        /// <summary>
+        /// Gets or sets the category of a unit test.
+        /// </summary>
+        public IList<string> Category { get; set; }
+
+        /// <summary>
+        /// Gets or sets a work item associated with a test.
+        /// </summary>
+        public IList<string> WorkItem { get; set; }
+
+        /// <summary>
+        /// Gets or sets a test specific property on a method.
+        /// </summary>
+        public IList<KeyValuePair<string, string>> Property { get; set; }
         #endregion
     }
 }

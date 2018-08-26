@@ -30,7 +30,7 @@ namespace Test.Automation.Base
                 || Debugger.IsAttached)
             {
                 MappedContext = new NUnitContextMap(TestContext.CurrentContext);
-                WriteLogToOutput("Test Context", MappedContext, new StringEnumConverter());
+                LogObjectToOutput("Test Data", MappedContext, new StringEnumConverter());
             }
         }
 
@@ -39,10 +39,19 @@ namespace Test.Automation.Base
         /// </summary>
         /// <param name="logSectionName">The name of the log section.</param>
         /// <param name="objectToLog">The information getting logged into that section.</param>
-        public static void WriteLogToOutput(string logSectionName, object objectToLog, params JsonConverter[] converters)
+        public static void LogObjectToOutput(string logSectionName, object objectToLog, params JsonConverter[] converters)
         {
+            var json = JsonConvert.SerializeObject(
+                objectToLog,
+                Formatting.Indented,
+                new JsonSerializerSettings
+            {
+                DefaultValueHandling = DefaultValueHandling.Ignore,
+                Converters = converters
+            });
+
             Console.WriteLine($"{logSectionName.ToUpperInvariant()}");
-            Console.WriteLine(JsonConvert.SerializeObject(objectToLog, Formatting.Indented, converters));
+            Console.WriteLine(json);
             Console.WriteLine($"{new string('=', 80)}");
         }
         

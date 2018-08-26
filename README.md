@@ -47,7 +47,7 @@ namespace UnitTestProject1
     public class UnitTest1 : NUnitTestBase
     {
         [Test]
-        public void NoTestAttributes_ShouldFail()
+        public void NoAttributes_ShouldFail()
         {
             Assert.That(4 + 1, Is.EqualTo(4));
         }
@@ -57,10 +57,10 @@ namespace UnitTestProject1
             Priority(Priority.High),
             Description("This test fails and has [Test] attributes."),
             Author("Your Name"),
-            Integration, Smoke, Web,
-            Property("Bug", "FOO-42"),
+            Integration, Negative, Web,
+            Property("Bug", "FOO-42"), Property("Bug", "FOO-43"), Property("ID", "BAR-42"),
             WorkItem("123"), WorkItem("456"), WorkItem("789")]
-        public void AllTestAttributes_ShouldFail()
+        public void AllAttributes_ShouldFail()
         {
             Assert.That(21 + 21, Is.EqualTo(41));
         }
@@ -71,16 +71,16 @@ namespace UnitTestProject1
             Description("This test passes and has [Test] attributes."),
             Author("Your Name"),
             UnitTest, Functional, Database,
-            Property("ID", "BAR-42"),
+            Property("ID", "BAR-42"), Property("Value", "100"),
             WorkItem("123"), WorkItem("456"), WorkItem("789")]
-        public void AllTestAttributes_ShouldPass()
+        public void AllAttributes_ShouldPass()
         {
             Assert.That(21 + 21, Is.EqualTo(42));
         }
 
-        [TestCase(2, 3, Author = "Your Name", Category = "Integration, Smoke, Web", Description = "This test fails and has [TestCase] attributes.", TestName = "AllTestCaseAttributes_ShouldFail")]
+        [TestCase(2, 3, Author = "Your Name", Category = "Integration, Smoke, Web", Description = "This test fails and has [TestCase] attributes.", TestName = "ParameterizedTestCase_ShouldFail")]
         [TestCase(-5, 9)]
-        public void ParameterizedTestWithAttributes(int first, int second)
+        public void ParameterizedTestCase(int first, int second)
         {
             Assert.That(first + second, Is.EqualTo(4));
         }
@@ -89,18 +89,28 @@ namespace UnitTestProject1
 ```
   
 ### Example Test Output
-Message:   Expected: 41  
-  But was:  42
 
 ```json
+Test with all test attributes:
 {
+  "Id": "0-1002",
+  "TestName": "AllAttributes_ShouldFail",
+  "SafeTestName": "AllAttributes_ShouldFail",
+  "MethodName": "AllAttributes_ShouldFail",
+  "ClassName": "UnitTestProject2.UnitTest1",
+  "FullName": "UnitTestProject2.UnitTest1.AllAttributes_ShouldFail",
+  "CurrentDirectory": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\IDE",
+  "TestDirectory": "C:\\Source\\Repos\\test-automation-base\\UnitTestProject2\\bin\\Debug",
+  "WorkDirectory": "C:\\Source\\Repos\\test-automation-base\\UnitTestProject2\\bin\\Debug",
+  "Message": "  Expected: 41\r\n  But was:  42\r\n",
+  "TestResultStatus": "Fail",
   "Timeout": 60000,
   "Priority": "High",
   "Description": "This test fails and has [Test] attributes.",
   "Owner": "Your Name",
   "Category": [
     "Integration",
-    "Smoke",
+    "Negative",
     "Web"
   ],
   "WorkItem": [
@@ -116,20 +126,28 @@ Message:   Expected: 41
     {
       "Key": "Bug",
       "Value": "FOO-43"
+    },
+    {
+      "Key": "ID",
+      "Value": "BAR-42"
     }
-  ],
-  "Id": "0-1002",
-  "TestName": "AllTestAttributes_ShouldFail",
-  "SafeTestName": "AllTestAttributes_ShouldFail",
-  "MethodName": "AllTestAttributes_ShouldFail",
-  "ClassName": "UnitTestProject1.UnitTest1",
-  "FullyQualifiedTestClassName": "UnitTestProject1.UnitTest1.AllTestAttributes_ShouldFail",
+  ]
+}
+Test with no test attributes:
+{
+  "Id": "0-1001",
+  "TestName": "NoAttributes_ShouldFail",
+  "SafeTestName": "NoAttributes_ShouldFail",
+  "MethodName": "NoAttributes_ShouldFail",
+  "ClassName": "UnitTestProject2.UnitTest1",
+  "FullName": "UnitTestProject2.UnitTest1.NoAttributes_ShouldFail",
   "CurrentDirectory": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\IDE",
-  "TestBinariesDirectory": "C:\\Source\\Repos\\test-automation-base\\UnitTestProject1\\bin\\Debug",
-  "LogDirectory": "C:\\Source\\Repos\\test-automation-base\\UnitTestProject1\\bin\\Debug",
-  "Message": "  Expected: 41\r\n  But was:  42\r\n",
+  "TestDirectory": "C:\\Source\\Repos\\test-automation-base\\UnitTestProject2\\bin\\Debug",
+  "WorkDirectory": "C:\\Source\\Repos\\test-automation-base\\UnitTestProject2\\bin\\Debug",
+  "Message": "  Expected: 4\r\n  But was:  5\r\n",
   "TestResultStatus": "Fail"
 }
+
 ```
   
 ## Viewing Local Packages
