@@ -1,11 +1,9 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
+using System;
+using System.Diagnostics;
+using System.IO;
 
 namespace Test.Automation.Base
 {
@@ -13,7 +11,7 @@ namespace Test.Automation.Base
     /// Represents an abstract base class for logging NUnit TestContext data.
     /// </summary>
     [TestFixture]
-    public abstract class NUnitTestBase
+    public abstract class TestAutomationBase
     {
         /// <summary>
         /// Gets or sets the NUnit ITestAutomationContext of the current test method.
@@ -29,30 +27,21 @@ namespace Test.Automation.Base
             if (!(TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Passed)
                 || Debugger.IsAttached)
             {
-                MappedContext = new NUnitContextMap(TestContext.CurrentContext);
-                LogObjectToOutput("Test Data", MappedContext, new StringEnumConverter());
+                MappedContext = new TestContextAndAttributeMap(TestContext.CurrentContext);
+                LogContextAndAttributesToOutput(MappedContext);
             }
         }
 
         /// <summary>
-        /// Formats and logs data to output window.
+        /// Formats and logs test context and test attribute metadata to output window.
         /// </summary>
-        /// <param name="logSectionName">The name of the log section.</param>
-        /// <param name="objectToLog">The information getting logged into that section.</param>
-        public static void LogObjectToOutput(string logSectionName, object objectToLog, params JsonConverter[] converters)
+        /// <param name="context">The information getting logged into that section.</param>
+        public static void LogContextAndAttributesToOutput(ITestAutomationContext context)
         {
-            var json = JsonConvert.SerializeObject(
-                objectToLog,
-                Formatting.Indented,
-                new JsonSerializerSettings
-            {
-                DefaultValueHandling = DefaultValueHandling.Ignore,
-                Converters = converters
-            });
+            _ = context ?? throw new ArgumentNullException(nameof(context));
 
-            Console.WriteLine($"{logSectionName.ToUpperInvariant()}");
-            Console.WriteLine(json);
-            Console.WriteLine($"{new string('=', 80)}");
+            Console.WriteLine(context.ToString());
+            Console.WriteLine($"{new string('=', 40)}");
         }
         
         /// <summary>
@@ -63,7 +52,7 @@ namespace Test.Automation.Base
         /// <returns>Returns a string.</returns>
         public static string RemoveInvalidFileNameChars(string name, string safeCharacter = "X")
         {
-            return string.Join(safeCharacter, name.Split(Path.GetInvalidFileNameChars()));
+            return string.Join(safeCharacter, name?.Split(Path.GetInvalidFileNameChars()));
         }
 
         /// <summary>

@@ -1,14 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2026
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Automation.Base", "Test.Automation.Base\Test.Automation.Base.csproj", "{31393DD1-6B81-4569-AD1D-6CDAD3035670}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{951A19B6-7570-424B-AAC8-33EFD3FEEC3D}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
+		TestPassOutputWindow.png = TestPassOutputWindow.png
+		TestWithNoAttributes.png = TestWithNoAttributes.png
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Automation.BaseTests", "Test.Automation.BaseTests\Test.Automation.BaseTests.csproj", "{F56D9089-B1B9-47F7-B2D0-C53EA666A303}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +24,10 @@ Global
 		{31393DD1-6B81-4569-AD1D-6CDAD3035670}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31393DD1-6B81-4569-AD1D-6CDAD3035670}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31393DD1-6B81-4569-AD1D-6CDAD3035670}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F56D9089-B1B9-47F7-B2D0-C53EA666A303}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F56D9089-B1B9-47F7-B2D0-C53EA666A303}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F56D9089-B1B9-47F7-B2D0-C53EA666A303}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F56D9089-B1B9-47F7-B2D0-C53EA666A303}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,26 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using NUnit.Framework;
+using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
+using System.Text;
 
 namespace Test.Automation.Base
 {
     /// <summary>
     /// Represents an NUnit TestContext mapped to test framework agnostic fields.
     /// </summary>
-    public class NUnitContextMap : ITestAutomationContext, ITestAutomationAttributes
+    public class TestContextAndAttributeMap : ITestAutomationContext, ITestAutomationAttributes
     {
         /// <summary>
         /// Creates a test framework agnostic test context from NUnit TestsContext data.
         /// </summary>
         /// <param name="testContext"></param>
-        public NUnitContextMap(TestContext testContext)
+        public TestContextAndAttributeMap(TestContext testContext)
         {
+            _ = testContext ?? throw new ArgumentNullException(nameof(testContext));
+
             Id = testContext.Test.ID;
             TestName = testContext.Test.Name;
-            SafeTestName = NUnitTestBase.RemoveInvalidFileNameChars(TestName);
+            SafeTestName = TestAutomationBase.RemoveInvalidFileNameChars(TestName);
             MethodName = testContext.Test.MethodName;
             ClassName = testContext.Test.ClassName;
             FullName = testContext.Test.FullName;
@@ -28,55 +31,24 @@ namespace Test.Automation.Base
             TestDirectory = testContext.TestDirectory;
             WorkDirectory = testContext.WorkDirectory;
             Message = testContext.Result.Message;
-            TestResultStatus = NUnitTestBase.GetTestResultStatus(testContext.Result.Outcome.Status);
-
-            // Default to 'infinite' timeout.
-            Timeout = int.MaxValue;
-            var propertyList = new List<KeyValuePair<string, string>>();
+            TestResultStatus = TestAutomationBase.GetTestResultStatus(testContext.Result.Outcome.Status);
 
             // Extract the property bag from TestContext.
             var properties = testContext.Test.Properties;
 
-            // Get the values when the attribute is provided.
-            foreach (var key in properties.Keys)
-            {
-                switch (key)
-                {
-                    case "Timeout":
-                        Timeout = (int)properties.Get("Timeout");
-                        break;
-                    case "Priority":
-                        var priority = properties.Get("Priority");
-                        if (Enum.IsDefined(typeof(Priority), priority))
-                        {
-                            Priority = (Priority)priority;
-                        }
-                        break;
-                    case "Description":
-                        Description = (string)properties.Get("Description");
-                        break;
-                    case "Author":
-                        Owner = (string)properties.Get("Author");
-                        break;
-                    case "Category":
-                        Category = properties["Category"].Select(x => x.ToString().Trim()).ToList();
-                        break;
-                    case "WorkItem":
-                        WorkItem = properties["WorkItem"].Select(x => x.ToString().Trim()).ToList();
-                        break;
-                    default:
-                        var customProperties = properties[key].Select(x => new KeyValuePair<string, string>(key, x.ToString()));
-                        foreach (var customProperty in customProperties)
-                        {
-                            propertyList.Add(customProperty);
-                        }
-                        break;
-                }
-            }
-            if (propertyList.Count > 0)
-            {
-                Property = propertyList;
-            }
+            Timeout = (int)(properties.Get("Timeout") ?? int.MaxValue);
+            Priority = (Priority)Enum.Parse(typeof(Priority), (properties.Get("Priority") ?? Priority.None).ToString());
+            Description = (string)(properties.Get("Description") ?? "Description attribute not set.");
+            Author = (string)(properties.Get("Author") ?? "Author attribute not set.");
+            Category = properties["Category"].Any() 
+                ? string.Join(", ", properties["Category"]) 
+                : "Categories attribute not set.";
+            IssueLinks = properties["IssueLinks"].Any() 
+                ? string.Join(", ", properties["IssueLinks"]) 
+                : "IssueLinks attribute not set.";
+            //
+            // Any new custom properties need to be defined in this class or they will not be mapped.
+            // 
         }
 
         #region TEST CONTEXT
@@ -151,37 +123,64 @@ namespace Test.Automation.Base
         /// Gets or sets the time-out period of a unit test.
         /// </summary>
         [DefaultValue(int.MaxValue)]
-        public int Timeout { get; set; }
+        public int Timeout { get; }
 
         /// <summary>
         /// Gets or sets the priority of a unit test. 
         /// </summary>
-        public Priority Priority { get; set; }
+        [DefaultValue(Priority.None)]
+        public Priority Priority { get; }
 
         /// <summary>
         /// Gets or sets the description of the test. 
         /// </summary>
-        public string Description { get; set; }
+        [DefaultValue("Description attribute not set.")]
+        public string Description { get; }
 
         /// <summary>
         /// Gets or sets the person responsible for maintaining, running, and/or debugging the test. 
         /// </summary>
-        public string Owner { get; set; }
+        [DefaultValue("Author attribute not set.")]
+        public string Author { get; }
 
         /// <summary>
         /// Gets or sets the category of a unit test.
         /// </summary>
-        public IList<string> Category { get; set; }
+        [DefaultValue("Categories attribute not set.")]
+        public string Category { get; }
 
         /// <summary>
         /// Gets or sets a work item associated with a test.
         /// </summary>
-        public IList<string> WorkItem { get; set; }
-
-        /// <summary>
-        /// Gets or sets a test specific property on a method.
-        /// </summary>
-        public IList<KeyValuePair<string, string>> Property { get; set; }
+        [DefaultValue("IssueLinks attribute not set.")]
+        public string IssueLinks { get; }
         #endregion
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("Test Context Metadata:".ToUpperInvariant());
+            sb.AppendLine($"Test ID\t\t {Id}");
+            sb.AppendLine($"Test Name\t\t {TestName}");
+            sb.AppendLine($"Safe Test Name\t\t {SafeTestName}");
+            sb.AppendLine($"Method Name\t\t {MethodName}");
+            sb.AppendLine($"Class Name\t\t {ClassName}");
+            sb.AppendLine($"Full Name\t\t {FullName}");
+            sb.AppendLine($"Current Dir\t\t {CurrentDirectory}");
+            sb.AppendLine($"Test Dir\t\t {TestDirectory}");
+            sb.AppendLine($"Work Dir\t\t {WorkDirectory}");
+            sb.AppendLine($"Message\t\t {Message}");
+            sb.AppendLine($"Test Result\t\t {TestResultStatus}");
+
+            sb.AppendLine("Test Attribute Metadata:".ToUpperInvariant());
+            sb.AppendLine($"Timeout\t\t {Timeout.ToString(CultureInfo.InvariantCulture)}");
+            sb.AppendLine($"Priority\t\t {Priority}");
+            sb.AppendLine($"Description\t\t {Description}");
+            sb.AppendLine($"Author\t\t {Author}");
+            sb.AppendLine($"Categories\t\t {Category}");
+            sb.Append($"Issue Links\t\t {IssueLinks}");
+
+            return sb.ToString();
+        }
     }
 }

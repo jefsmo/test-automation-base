@@ -25,9 +25,9 @@ namespace Test.Automation.Base
     public enum Priority
     {
         /// <summary>
-        /// Default priority - Unknown.
+        /// Default priority - None.
         /// </summary>
-        Unknown = 0,
+        None = 0,
 
         /// <summary>
         /// High priority.

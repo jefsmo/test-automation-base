@@ -3,21 +3,13 @@
 **README.md**
 
 Automatically logs test attribute and test context data to the output window.  
-
-|Test Mode|Result|Log to Output|
-|---|---|---|
-|Run|Pass|no|
-|Run|Fail|yes|
-|Debug|Pass|yes|
-|Debug|Fail|yes|
-
  - In general, logging can add a significant performance penalty to a passing test.
- - When a test suite contains hundreds of tests, this can add many minutes or even hours to the test run.
  - This framework only logs when tests fail or are run in debug mode.
 
 ## Release Notes
 |Date|Description|
 |---|---|
+| 2020-05-25| Refactor Categories, IssueLinks<br>Remove JSON dependency|
 |2018-08-25|Bug fixes; refactoring|
 |2018-07-01|Bug fixes <br> Update README|
 |2018-02-18|Bug fixes|
@@ -30,7 +22,7 @@ Automatically logs test attribute and test context data to the output window.
 [Troubleshooting](#troubleshooting)  
 
 ## NUnit Test Project Workflow
-- Ensure your test class inherits from the base class **`NUnitTestBase`**
+- Ensure your test class inherits from the base class **`TestAutomationBase`**
 - Ensure you have installed NUnit and NUnit3TestAdapter NuGet packages.
 - If the test is run in debug mode or if the test fails, the output window displays the test log.
 - If the test passes and is not run in debug mode, nothing is logged to the output window.
@@ -41,38 +33,35 @@ Automatically logs test attribute and test context data to the output window.
 using NUnit.Framework;
 using Test.Automation.Base;
 
-namespace UnitTestProject1
+namespace Test.Automation.BaseTests
 {
     [TestFixture]
-    public class UnitTest1 : NUnitTestBase
+    public class UnitTest1 : TestAutomationBase
     {
-        [Test]
-        public void NoAttributes_ShouldFail()
-        {
-            Assert.That(4 + 1, Is.EqualTo(4));
-        }
-
         [Test,
             Timeout(60000),
             Priority(Priority.High),
             Description("This test fails and has [Test] attributes."),
             Author("Your Name"),
-            Integration, Negative, Web,
-            Property("Bug", "FOO-42"), Property("Bug", "FOO-43"), Property("ID", "BAR-42"),
-            WorkItem("123"), WorkItem("456"), WorkItem("789")]
+            Categories(TestLevel.Component, TestType.Functional, TestArea.None),
+            IssueLinks("jra-123", "jra-456", "jra-789"),
+            Property("Bug", "FOO-42"), 
+            Property("Bug", "FOO-43"), 
+            Property("ID", "BAR-42")]
         public void AllAttributes_ShouldFail()
         {
             Assert.That(21 + 21, Is.EqualTo(41));
         }
 
-        [Test,
-            Timeout(int.MaxValue),
+        [Test(
+            Author = "Your Name",
+            Description = "This test passes and has [Test] attributes.",
+            TestOf = typeof(int)),
             Priority(Priority.Normal),
-            Description("This test passes and has [Test] attributes."),
-            Author("Your Name"),
-            UnitTest, Functional, Database,
-            Property("ID", "BAR-42"), Property("Value", "100"),
-            WorkItem("123"), WorkItem("456"), WorkItem("789")]
+            Categories(TestLevel.None, TestType.Functional, TestArea.Api),
+            IssueLinks("jqa-123", "JQA-456", "jQa-789"),
+            Property("ID", "BAR-42"),
+            Property("Value", "100")]
         public void AllAttributes_ShouldPass()
         {
             Assert.That(21 + 21, Is.EqualTo(42));
@@ -90,66 +79,9 @@ namespace UnitTestProject1
   
 ### Example Test Output
 
-```json
-Test with all test attributes:
-{
-  "Id": "0-1002",
-  "TestName": "AllAttributes_ShouldFail",
-  "SafeTestName": "AllAttributes_ShouldFail",
-  "MethodName": "AllAttributes_ShouldFail",
-  "ClassName": "UnitTestProject2.UnitTest1",
-  "FullName": "UnitTestProject2.UnitTest1.AllAttributes_ShouldFail",
-  "CurrentDirectory": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\IDE",
-  "TestDirectory": "C:\\Source\\Repos\\test-automation-base\\UnitTestProject2\\bin\\Debug",
-  "WorkDirectory": "C:\\Source\\Repos\\test-automation-base\\UnitTestProject2\\bin\\Debug",
-  "Message": "  Expected: 41\r\n  But was:  42\r\n",
-  "TestResultStatus": "Fail",
-  "Timeout": 60000,
-  "Priority": "High",
-  "Description": "This test fails and has [Test] attributes.",
-  "Owner": "Your Name",
-  "Category": [
-    "Integration",
-    "Negative",
-    "Web"
-  ],
-  "WorkItem": [
-    "123",
-    "456",
-    "789"
-  ],
-  "Property": [
-    {
-      "Key": "Bug",
-      "Value": "FOO-42"
-    },
-    {
-      "Key": "Bug",
-      "Value": "FOO-43"
-    },
-    {
-      "Key": "ID",
-      "Value": "BAR-42"
-    }
-  ]
-}
-Test with no test attributes:
-{
-  "Id": "0-1001",
-  "TestName": "NoAttributes_ShouldFail",
-  "SafeTestName": "NoAttributes_ShouldFail",
-  "MethodName": "NoAttributes_ShouldFail",
-  "ClassName": "UnitTestProject2.UnitTest1",
-  "FullName": "UnitTestProject2.UnitTest1.NoAttributes_ShouldFail",
-  "CurrentDirectory": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\IDE",
-  "TestDirectory": "C:\\Source\\Repos\\test-automation-base\\UnitTestProject2\\bin\\Debug",
-  "WorkDirectory": "C:\\Source\\Repos\\test-automation-base\\UnitTestProject2\\bin\\Debug",
-  "Message": "  Expected: 4\r\n  But was:  5\r\n",
-  "TestResultStatus": "Fail"
-}
+![Sample Output With Attributes](TestPassOutputWindow.png)  
+![Sample Output Without Attributes](TestWithNoAttributes.png)  
 
-```
-  
 ## Viewing Local Packages
 - Install NuGet Package Explorer to view local packages.  
 - [NuGetPackageExplorer](https://github.com/NuGetPackageExplorer/NuGetPackageExplorer)
@@ -158,12 +90,11 @@ Test with no test attributes:
 #### Create a Local NuGet Package with OctoPack
 - Add a `.nuspec` file to each project in the solution that you want to package with NuGet.
 - The `.nuspec` file name **must be the same name as the project** with the `.nuspec` extension
-- Open a '`Developer Command Prompt for VS2017`' command window.
+- Open a '`Developer Command Prompt for VS2019`' command window.
 - Navigate to the solution or project that you want to OctoPack.
-- Run the following command:
+- Be sure to increment the build version after making and saving changes to force a new build.
 
-#### MSBuild Octopack Command
-
+Run the following command:  
 ```text
 MSBUILD Test.Automation.Base.csproj /t:Rebuild /p:Configuration=Release /p:RunOctoPack=true /p:OctoPackPublishPackageToFileShare=C:\Packages /p:OctoPackPackageVersion=1.0.0
 ```

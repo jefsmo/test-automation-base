@@ -16,6 +16,8 @@ namespace Test.Automation.Base
         /// <returns></returns>
         public static string ToDescription(this Enum en)
         {
+            _ = en ?? throw new ArgumentNullException(nameof(en));
+
             var type = en.GetType();
             var memberInfo = type.GetMember(en.ToString());
 
